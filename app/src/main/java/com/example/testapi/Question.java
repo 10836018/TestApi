@@ -2,6 +2,8 @@ package com.example.testapi;
 
 public class Question {
 
+    private String userQuestion;
+
     public String getUserQuestion() {
         return userQuestion;
     }
@@ -9,8 +11,5 @@ public class Question {
     public void setUserQuestion(String userQuestion) {
         this.userQuestion = userQuestion;
     }
-
-
-    private String userQuestion;
 
 }

@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             String answer = params[0];
             String path = params[1];
-            HttpURLConnection conn = null;
+            HttpURLConnection conn;
 
             JSONObject questionJSON = new JSONObject();
             try {
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                     conn.setDoOutput(true);//允许对外输出数据
                     conn.setDoInput(true);
                     OutputStream os = conn.getOutputStream();//写数据OutputStream
-                    os.write(content.getBytes());//把数据传递给服务器了
+                    os.write(content.getBytes("UTF-8"));//把数据传递给服务器了
                     os.flush();
                     os.close();
                     Log.d("code", "code" + conn.getResponseCode());
@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                         InputStream is = conn.getInputStream();
                         BufferedReader br = new BufferedReader(new InputStreamReader(is));
                         String str = br.readLine();
+                        mTxtAnswer.setText(str);
                         return str;
                     }
                 } catch (MalformedURLException e) {
@@ -143,8 +144,3 @@ public class MainActivity extends AppCompatActivity {
 
 
 }
-
-
-
-
-
