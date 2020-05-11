@@ -9,9 +9,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,43 +57,34 @@ public class MainActivity extends AppCompatActivity {
 
     public void AnswerPost(Question question){
         String userQuestion=question.getUserQuestion();
-
-        /**
-         * 192.168.0.100为电脑ipv4地址
-         * Demo_Database为eclipse中的工程名
-         * TestServlet为要提交到的servlet名
-         */
         String path="https://flaskapi0415.herokuapp.com/";
-        new MyPostTask().execute(userQuestion, path);//调方法
+
+        new MyPostTask().execute(userQuestion, path);//調方法
     }
 
 
     class MyPostTask extends AsyncTask<String,Integer,String> {
         @Override
         protected String doInBackground(String... params) {
-            String answer = params[0];
+            String question = params[0];
             String path = params[1];
             HttpURLConnection conn;
 
             JSONObject questionJSON = new JSONObject();
             try {
-                questionJSON.put("answer", answer);
+                questionJSON.put("answer", question);
                 String content = String.valueOf(questionJSON);
 
                 try {
                     URL url = new URL(path);
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("POST");
-                    conn.setConnectTimeout(8000);//超时时间
-                    /**
-                     * conn.setRequestProperty("Content-Length",s.length()+"");
-                     * 这条语句可能会导致报java.net.ProtocolException: exceeded content-length limit of 26 bytes 错误
-                     */
+                    conn.setConnectTimeout(8000);//超時時間
                     conn.setRequestProperty("Content-Type", "application/json");
-                    conn.setDoOutput(true);//允许对外输出数据
+                    conn.setDoOutput(true);//允許對外傳輸數據
                     conn.setDoInput(true);
-                    OutputStream os = conn.getOutputStream();//写数据OutputStream
-                    os.write(content.getBytes("UTF-8"));//把数据传递给服务器了
+                    OutputStream os = conn.getOutputStream();//寫數據OutputStream
+                    os.write(content.getBytes("UTF-8"));//把數據傳遞給伺服器
                     os.flush();
                     os.close();
                     Log.d("code", "code" + conn.getResponseCode());
@@ -105,8 +95,10 @@ public class MainActivity extends AppCompatActivity {
                         InputStream is = conn.getInputStream();
                         BufferedReader br = new BufferedReader(new InputStreamReader(is));
                         String str = br.readLine();
-                        mTxtAnswer.setText(str);
-                        return str;
+                        JSONObject answerJSON = new JSONObject(str);
+                        String ans = answerJSON.getString("answer");
+                        //mTxtAnswer.setText(str);
+                        return ans;
                     }
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
@@ -125,18 +117,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            Log.d("JSON",s);//打印服务器返回标签
-            //flag=true;
-            switch (s){
-                //判断返回的状态码，并把对应的说明显示在UI
-                case "100":
-                    mTxtAnswer.setText(s);
-                    break;
-                case "200":
-                    mTxtAnswer.setText(s);
-                    break;
-            }
-            Log.d("JSON","验证后");
+            Log.d("JSON",s);//打印伺服器返回標籤
+
+            mTxtAnswer.setText(s);
+
+            Log.d("JSON","驗證後");
         }
 
     }
