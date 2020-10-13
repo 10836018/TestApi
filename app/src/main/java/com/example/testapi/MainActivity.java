@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void AnswerPost(Question question){
         String userQuestion=question.getUserQuestion();
-        String path="https://flaskapi0415.herokuapp.com/";
+        String path="https://974d85350c08.ngrok.io";
 
         new MyPostTask().execute(userQuestion, path);//調方法
     }
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
             JSONObject questionJSON = new JSONObject();
             try {
-                questionJSON.put("answer", question);
+                questionJSON.put("question", question);
                 String content = String.valueOf(questionJSON);
 
                 try {
